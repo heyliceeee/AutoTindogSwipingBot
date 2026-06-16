@@ -1,26 +1,26 @@
 # 🐶 Tindog Automation  
-Automação em Python + Selenium para fazer login automático no Tindog e dar likes de forma contínua, lidando com popups e falhas temporárias.
+Python + Selenium automation to log into Tindog, handle popups, and swipe dogs automatically with a resilient retry system.
 
 ---
 
-## 🚀 Funcionalidades
+## 🚀 Features
 
-- **Login automático** via Facebark  
-- **Gestão de popups** (permissões, cookies, match)  
-- **Swipe automático** (20 likes por execução)  
-- **Sistema de retry** para tornar o fluxo resiliente  
-- **Chrome persistente** com perfil dedicado  
+- **Automatic login** via Facebark  
+- **Popup handling** (permissions, cookies, match)  
+- **Automatic swiping** (20 likes per run)  
+- **Retry system** for robust execution  
+- **Persistent Chrome profile**  
 
 ---
 
-## 📦 Requisitos
+## 📦 Requirements
 
 - Python 3.10+
 - Selenium
 - python-dotenv
-- Chrome + ChromeDriver compatível
+- Chrome + matching ChromeDriver
 
-Instalação:
+Install dependencies:
 
 ```bash
 pip install selenium python-dotenv
@@ -28,59 +28,57 @@ pip install selenium python-dotenv
 
 ---
 
-## 🔧 Configuração
+## 🔧 Configuration
 
-Cria um ficheiro `.env` com:
+Create a `.env` file:
 
 ```
 TINDOG_URL=https://tindog.example.com
-TINDOG_EMAIL=teu_email
-TINDOG_PASSWORD=tua_password
+TINDOG_EMAIL=your_email
+TINDOG_PASSWORD=your_password
 ```
 
-O script cria automaticamente um perfil Chrome persistente em `./chrome_profile`.
+A persistent Chrome profile will be created automatically in `./chrome_profile`.
 
 ---
 
-## 🧠 Como funciona
+## 🧠 How It Works
 
-### 1. Inicialização do WebDriver
-- Carrega variáveis do `.env`
-- Cria um perfil Chrome dedicado
-- Abre o site do Tindog
+### 1. WebDriver Initialization
+- Loads environment variables  
+- Creates a dedicated Chrome profile  
+- Opens the Tindog website  
 
-### 2. Login Automático
-A função `login_automatically()`:
+### 2. Automatic Login
+`login_automatically()`:
 
-- Clica no botão **Log in**
-- Seleciona **Facebark**
-- Troca para a janela de autenticação
-- Preenche email e password
-- Submete o formulário
-- Regressa à janela principal
-- Fecha popups iniciais
-- Aguarda até a homepage carregar (`main.tindog-swipe-container`)
+- Clicks **Log in**
+- Selects **Facebark**
+- Switches to the authentication window
+- Fills email and password
+- Submits the form
+- Returns to the main window
+- Closes initial popups
+- Waits for the homepage (`main.tindog-swipe-container`)
 
-### 3. Dar Likes
-A função `like_dog()`:
+### 3. Liking Dogs
+`like_dog()`:
 
-- Tenta clicar no botão **Like**
-- Se houver popup de match → fecha
-- Se o botão ainda não existir → espera até aparecer
-- Repete o processo 20 vezes
+- Attempts to click the **Like** button  
+- If a match popup appears → closes it  
+- If the button isn’t available → waits for it  
+- Repeats the process 20 times  
 
-### 4. Retry Automático
-A função `retry(func)`:
+### 4. Retry System
+`retry(func)`:
 
-- Executa a função
-- Se falhar por timeout, elemento inexistente ou clique bloqueado → tenta novamente
-- Após várias tentativas falhadas → lança erro
+- Executes the function  
+- Retries on timeouts, missing elements, or blocked clicks  
+- Raises an error after repeated failures  
 
 ---
 
-## ▶️ Execução
-
-O script corre automaticamente:
+## ▶️ Running the Script
 
 ```python
 retry(login_automatically, description="Login")
@@ -89,20 +87,20 @@ retry(like_dog, description="Like a dog")
 
 ---
 
-## 📁 Estrutura do Projeto
+## 📁 Project Structure
 
 ```
 .
-├── chrome_profile/      # Perfil persistente do Chrome
-├── .env                 # Credenciais e URL
-├── script.py            # Código principal
-└── README.md            # Este ficheiro
+├── chrome_profile/      # Persistent Chrome profile
+├── .env                 # Credentials and URL
+├── script.py            # Main automation script
+└── README.md            # This file
 ```
 
 ---
 
-## 📝 Notas
+## 📝 Notes
 
-- O script evita `time.sleep()` sempre que possível, usando esperas explícitas do Selenium.
-- O retry torna o fluxo robusto contra popups, delays e falhas temporárias.
-- O perfil Chrome permite manter sessões e cookies entre execuções.
+- The script avoids unnecessary delays by relying on Selenium’s explicit waits.  
+- The retry system ensures stability against popups and temporary failures.  
+- The persistent Chrome profile keeps sessions and cookies between runs.
