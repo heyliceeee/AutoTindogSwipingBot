@@ -60,6 +60,24 @@ def login_automatically():
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "main.tindog-swipe-container"))) # Wait for the main element to appear
 
     return "OK"
+def like_dog():
+    for i in range(20): # Like the dog 20 times
+        try: # Try to like the dog
+            like_btn = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button.btn-like")))  # Wait for the like button to appear
+            like_btn.click()  # Click the like button
+
+        except ElementClickInterceptedException: # If the like button is not clickable, try again
+            try: # Try to click the like button again
+                close_popup = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".match-popup a"))) # Wait for the close popup button to appear
+                close_popup.click() # Click the close popup button
+            except TimeoutException: # If the close popup button is not clickable, try again
+                pass # Do nothing
+
+        except NoSuchElementException: # If the like button is not found, try again
+            try: # Try to click the like button again
+                wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button.btn-like"))) # Wait for the like button to appear
+            except TimeoutException: # If the like button is not clickable, try again
+                pass # Do nothing
 def retry(func, retries=7, description=None):
     """
     Retry a function if it fails
@@ -80,3 +98,4 @@ def retry(func, retries=7, description=None):
     raise Exception(f"❌ All retries failed for: {description}") # If all retries fail, raise an exception
 
 retry(login_automatically, description="Login") # Call the login_automatically function with retries
+retry(like_dog, description="Like a dog") # Call the like_dog function with retries
